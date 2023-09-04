@@ -5,7 +5,7 @@ AIIP = "localhost"
 PORT = "11434"
 
 def get_url(ip: str, port: str):
-    return f"{ip}:{port}"
+    return f"http://{ip}:{port}"
 
 class LLMConfig(BaseModel):
     model: str
