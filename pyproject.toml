@@ -8,6 +8,7 @@ packages = [{include = "nova_chat"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+icecream = "^2.1.3"
 langchain = {extras = ["llm"], version = "^0.0.281"}
 
 
