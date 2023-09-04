@@ -1,7 +1,7 @@
 from enum import Enum
 from pydantic import BaseModel
 
-AIIP = "192.168.50.2"
+AIIP = "localhost"
 PORT = "11434"
 
 def get_url(ip: str, port: str):
