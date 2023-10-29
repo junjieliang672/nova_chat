@@ -1,0 +1,5 @@
+icecream
+pydantic
+langchain
+streamlit
+pyautogen
