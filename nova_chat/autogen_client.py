@@ -7,7 +7,8 @@ from nova_chat.constants import (
 
 config_list = [
     {
-        "api_key": get_url(ip=AIIP, port=PORT)
+        # "api_key": get_url(ip=AIIP, port=PORT)
+        "api_key": "http://0.0.0.0:8000"
     }
 ]
 
