@@ -67,10 +67,10 @@ def select_model():
     
 def build_sidebar():
     with st.sidebar:
-        st.button('Clear chat history', on_click=clear_chat_history)
-        v = select_model()
-        model = RemoteLLM.get_enum_by_model(v)
-        st.write("--")
+        with st.container():
+            v = select_model()
+            model = RemoteLLM.get_enum_by_model(v)
+            st.markdown("#")
     return model
 
 
@@ -80,42 +80,46 @@ def build_streamlit_demo():
     memory = ConversationBufferWindowMemory(k=30, memory_key="chat_history", return_messages=True)
     
     with st.sidebar:
-        filename = st.text_input("Save conversation history to file","test.json")
-        if st.button("Save conversation history",type="primary"):
-            if st.session_state.messages:
-                save_message(filename, st.session_state.messages)
-                st.success("Done!")
-            else:
-                st.error("Empty session state!")
-            
-        with st.expander("List saved conversations:"):
-            if not os.path.exists(IO_DIR):
-                os.makedirs(IO_DIR)
+        with st.container():
+            filename = st.text_input("Save conversation history to file","test.json")
+            save_col, clear_col = st.columns(2)
+            with save_col:
+                if st.button("Save conversation history",type="primary"):
+                    if st.session_state.messages:
+                        save_message(filename, st.session_state.messages)
+                        st.success("Done!")
+                    else:
+                        st.error("Empty session state!")
+            with clear_col:
+                st.button('Clear chat history', on_click=clear_chat_history)
                 
-            files = os.listdir(IO_DIR)
+            with st.expander("List saved conversations:"):
+                if not os.path.exists(IO_DIR):
+                    os.makedirs(IO_DIR)
+                    
+                files = os.listdir(IO_DIR)
+                    
+                file_modified_time = [
+                    datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).isoformat() for file
+                    in files
+                ]
+                file_sizes = [
+                    format(os.path.getsize(os.path.join(IO_DIR, file)) / (1024 * 1024), f".2f") for
+                    file in files]
+                files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
+                    index=['Model', 'Last modified', 'Size in MB']).T
+                st.dataframe(files_with_time)
                 
-            file_modified_time = [
-                datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).isoformat() for file
-                in files
-            ]
-            file_sizes = [
-                format(os.path.getsize(os.path.join(IO_DIR, file)) / (1024 * 1024), f".2f") for
-                file in files]
-            files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
-                index=['Model', 'Last modified', 'Size in MB']).T
-            st.dataframe(files_with_time)
-            
-            file = st.selectbox("Select a memory file to load", files)
-            if st.button("Load conversations",type="primary"):
-                messages = load_message(file)
-                st.session_state.messages = messages
-                st.success("Loaded!")
+                file = st.selectbox("Select a memory file to load", files)
+                if st.button("Load conversations",type="primary"):
+                    messages = load_message(file)
+                    st.session_state.messages = messages
+                    st.success("Loaded!")
                     
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
     with st.container():
-        st.write("------------- Chat history -------------")
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
