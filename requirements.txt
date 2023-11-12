@@ -2,6 +2,4 @@ icecream
 pydantic
 langchain
 streamlit
-pyautogen
-litellm
-pymemgpt
+watchdog

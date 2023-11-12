@@ -18,6 +18,11 @@ class LLMConfig(BaseModel):
     open_api_key: Optional[str] = None
 
 class RemoteLLM(Enum):
+    MISTRAL = LLMConfig(
+        model="mistral",
+        base_url=get_url(AIIP, PORT),
+        label="mistral"
+    )
     LLAMA2_13B = LLMConfig(
         model="llama2:13b",
         base_url=get_url(AIIP, PORT),
