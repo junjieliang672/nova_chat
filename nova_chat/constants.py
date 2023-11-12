@@ -56,4 +56,4 @@ class RemoteLLM(Enum):
             if item.value.label == label_to_match:
                 return item
             
-IO_DIR = "~/Developer/streamlit_conversations"
+IO_DIR = "/streamlit_conversations"
