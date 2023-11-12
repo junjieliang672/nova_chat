@@ -1,4 +1,6 @@
-from nova_chat.constants import RemoteLLM
+import datetime
+import os
+from nova_chat.constants import IO_DIR, RemoteLLM
 from nova_chat.llm_client import LLMFactory
 
 from langchain.prompts import (
@@ -8,12 +10,22 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
 )
 from langchain.chains import LLMChain
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryMemory, ChatMessageHistory
 import streamlit as st
 from icecream import ic
+import pandas as pd
+from nova_chat.io import (
+    memory_to_dict,
+    save_message,
+    load_message,
+)
 
-def getConversation(memory, model, st=None):
+def getConversation(model, st=None):
     chat = LLMFactory.getChat(model, st)
+    
+    history = ChatMessageHistory()
+    history.add_user_message("hi")
+    history.add_ai_message("hi there!")
     
     # Prompt 
     prompt = ChatPromptTemplate(
@@ -26,16 +38,25 @@ def getConversation(memory, model, st=None):
             HumanMessagePromptTemplate.from_template("{question}")
         ]
     )
-
-    return LLMChain(
+    
+    memory = ConversationSummaryMemory.from_messages(
         llm=chat,
-        prompt=prompt,
-        verbose=False,
-        memory=memory
+        chat_memory=history,
+        return_messages=True,
     )
+
+    return (
+            LLMChain(
+                llm=chat,
+                prompt=prompt,
+                verbose=False,
+                memory=memory
+            ),memory
+        )
     
 
 def form_prompt_history(messages, memory):
+    """Build up the prompt memory from the session state messages."""
     input, output = None, None
     for message in messages:
         if message["role"] == "user":
@@ -50,23 +71,55 @@ def form_prompt_history(messages, memory):
 
 def clear_chat_history():
     st.session_state.messages = []
-    
 
 def select_model():
     return st.selectbox(
         "What model do you want to use?",
         (x.value.label for x in RemoteLLM),
     )
-
-
-def build_streamlit_demo():
+    
+def build_sidebar():
     with st.sidebar:
         st.button('Clear chat history', on_click=clear_chat_history)
         v = select_model()
         model = RemoteLLM.get_enum_by_model(v)
+        st.write("--")
+    return model
+
+
+def build_streamlit_demo():
     
-    memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
-    chat = getConversation(memory, model, st)
+    model = build_sidebar()
+    chat, memory = getConversation(memory, model, st)
+    
+    with st.sidebar():
+        filename = st.text(help="save conversation to the file...")
+        if st.button("Save conversation history"):
+            msg_dict = memory_to_dict(memory)
+            save_message(filename, msg_dict)
+            st.success("Done!")
+            
+        with st.expander("List saved conversations:"):
+            files = os.listdir(IO_DIR)
+            file_modified_time = [
+                datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).isoformat() for file
+                in files
+            ]
+            file_sizes = [
+                format(os.path.getsize(os.path.join(IO_DIR, file)) / (1024 * 1024), f".2f") for
+                file in files]
+            files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
+                index=['Model', 'Last modified', 'Size in MB']).T
+            st.dataframe(files_with_time)
+            
+            file = st.selectbox("Select a memory file to load", files)
+            if st.button("Load conversations"):
+                messages = load_message(os.path.join(IO_DIR, file))
+                st.session_state.messages = []
+                for message in messages:
+                    st.session_state.messages.append({"role": "user", "content": message["input"]})
+                    st.session_state.messages.append({"role": "assistant", "content": message["output"]})
+                    
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
