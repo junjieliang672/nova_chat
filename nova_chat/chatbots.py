@@ -15,7 +15,6 @@ import streamlit as st
 from icecream import ic
 import pandas as pd
 from nova_chat.io import (
-    memory_to_dict,
     save_message,
     load_message,
 )
