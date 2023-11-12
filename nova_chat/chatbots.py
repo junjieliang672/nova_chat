@@ -82,7 +82,7 @@ def build_streamlit_demo():
     chat = getConversation(memory,model, st)
     
     with st.sidebar:
-        filename = st.text(help="save conversation to the file...")
+        filename = st.text_input("test.json")
         if st.button("Save conversation history"):
             msg_dict = memory_to_dict(memory)
             save_message(filename, msg_dict)
