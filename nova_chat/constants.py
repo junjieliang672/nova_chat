@@ -35,19 +35,19 @@ class RemoteLLM(Enum):
         model="gpt-3.5-turbo-16k",
         base_url=None,
         label="chatgpt-16k",
-        open_api_key=environ["OPENAI_API_KEY"],
+        open_api_key=environ.get("OPENAI_API_KEY"),
     )
     CHATGPT = LLMConfig(
         model="gpt-3.5-turbo",
         base_url=None,
         label="chatgpt",
-        open_api_key=environ["OPENAI_API_KEY"],
+        open_api_key=environ.get("OPENAI_API_KEY"),
     )
     GPT4 = LLMConfig(
         model="gpt-4",
         base_url=None,
         label="gpt4",
-        open_api_key=environ["OPENAI_API_KEY"],
+        open_api_key=environ.get("OPENAI_API_KEY"),
     )
     
     @classmethod
@@ -56,4 +56,4 @@ class RemoteLLM(Enum):
             if item.value.label == label_to_match:
                 return item
             
-IO_DIR = "/Users/junjieliang/Developer/streamlit_conversations"
+IO_DIR = "~/Developer/streamlit_conversations"
