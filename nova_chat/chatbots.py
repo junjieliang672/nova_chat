@@ -84,9 +84,11 @@ def build_streamlit_demo():
     with st.sidebar:
         filename = st.text_input("Save conversation history to file","test.json")
         if st.button("Save conversation history",type="primary"):
-            msg_dict = memory_to_dict(memory)
-            save_message(filename, msg_dict)
-            st.success("Done!")
+            if st.session_state.messages:
+                save_message(filename, st.session_state.messages)
+                st.success("Done!")
+            else:
+                st.error("Empty session state!")
             
         with st.expander("List saved conversations:"):
             if not os.path.exists(IO_DIR):

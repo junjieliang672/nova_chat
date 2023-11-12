@@ -1,16 +1,15 @@
 import os
-import json
+import pickle
 from nova_chat.constants import IO_DIR
-
-def memory_to_dict(memory):
-    return [msg.dict() for msg in memory.chat_memory.messages]
 
 def save_message(filename, mes):
     p = os.path.join(IO_DIR, filename)
-    with open(p, 'w') as file:
-        json.dump(mes, file)
+    print(p)
+    with open(p, 'wb') as file:
+        pickle.dump(mes, p)
 
 def load_message(filename):
     p = os.path.join(IO_DIR, filename)
-    with open(p, "r") as file:
-        return json.load(file)
+    print(p)
+    with open(p, "rb") as file:
+        return pickle.load(file)
