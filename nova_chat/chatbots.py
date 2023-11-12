@@ -82,8 +82,8 @@ def build_streamlit_demo():
     chat = getConversation(memory,model, st)
     
     with st.sidebar:
-        filename = st.text_input("test.json")
-        if st.button("Save conversation history"):
+        filename = st.text_input("Save conversation history to file","test.json")
+        if st.button("Save conversation history",type="primary"):
             msg_dict = memory_to_dict(memory)
             save_message(filename, msg_dict)
             st.success("Done!")
@@ -106,7 +106,8 @@ def build_streamlit_demo():
             st.dataframe(files_with_time)
             
             file = st.selectbox("Select a memory file to load", files)
-            if st.button("Load conversations"):
+            if st.button("Load conversations",type="primary"):
+                st.write(file)
                 messages = load_message(os.path.join(IO_DIR, file))
                 st.session_state.messages = []
                 for message in messages:
