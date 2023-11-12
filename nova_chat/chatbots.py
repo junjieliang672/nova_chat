@@ -90,7 +90,7 @@ def build_sidebar():
 def build_streamlit_demo():
     
     model = build_sidebar()
-    chat, memory = getConversation(memory, model, st)
+    chat, memory = getConversation(model, st)
     
     with st.sidebar():
         filename = st.text(help="save conversation to the file...")
