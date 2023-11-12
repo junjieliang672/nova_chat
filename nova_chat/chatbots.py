@@ -108,8 +108,7 @@ def build_streamlit_demo():
                     file in files]
                 files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
                     index=['Model', 'Last modified', 'Size in MB']).T
-                files_with_time.set_index("Model")
-                st.dataframe(files_with_time)
+                st.dataframe(files_with_time.set_index("Model"))
                 
                 file = st.selectbox("Select a memory file to load", files)
                 if st.button("Load conversations",type="primary"):
