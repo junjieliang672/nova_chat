@@ -100,7 +100,7 @@ def build_streamlit_demo():
                 files = os.listdir(IO_DIR)
                     
                 file_modified_time = [
-                    datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).isoformat() for file
+                    datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).date() for file
                     in files
                 ]
                 file_sizes = [
