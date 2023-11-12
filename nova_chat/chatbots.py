@@ -10,7 +10,7 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
 )
 from langchain.chains import LLMChain
-from langchain.memory import ConversationSummaryMemory, ChatMessageHistory
+from langchain.memory import ConversationBufferWindowMemory
 import streamlit as st
 from icecream import ic
 import pandas as pd
@@ -20,12 +20,8 @@ from nova_chat.io import (
     load_message,
 )
 
-def getConversation(model, st=None):
+def getConversation(memory, model, st=None):
     chat = LLMFactory.getChat(model, st)
-    
-    history = ChatMessageHistory()
-    history.add_user_message("hi")
-    history.add_ai_message("hi there!")
     
     # Prompt 
     prompt = ChatPromptTemplate(
@@ -38,20 +34,12 @@ def getConversation(model, st=None):
             HumanMessagePromptTemplate.from_template("{question}")
         ]
     )
-    
-    memory = ConversationSummaryMemory.from_messages(
-        llm=chat,
-        chat_memory=history,
-        return_messages=True,
-    )
 
-    return (
-            LLMChain(
-                llm=chat,
-                prompt=prompt,
-                verbose=False,
-                memory=memory
-            ),memory
+    return LLMChain(
+            llm=chat,
+            prompt=prompt,
+            verbose=False,
+            memory=memory
         )
     
 
@@ -90,7 +78,8 @@ def build_sidebar():
 def build_streamlit_demo():
     
     model = build_sidebar()
-    chat, memory = getConversation(model, st)
+    chat = getConversation(model, st)
+    memory = ConversationBufferWindowMemory(k=30, memory_key="chat_historychat_history", return_messages=True)
     
     with st.sidebar():
         filename = st.text(help="save conversation to the file...")
