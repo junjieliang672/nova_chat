@@ -17,6 +17,7 @@ import pandas as pd
 from nova_chat.io import (
     save_message,
     load_message,
+    delete_message,
 )
 
 def getConversation(memory, model, st=None):
@@ -81,7 +82,7 @@ def build_streamlit_demo():
     
     with st.sidebar:
         with st.container():
-            filename = st.text_input("Save conversation history to file","test.json")
+            filename = st.text_input("Save conversation history to file","test")
             save_col, clear_col = st.columns(2)
             with save_col:
                 if st.button("Save chat",type="primary"):
@@ -110,11 +111,18 @@ def build_streamlit_demo():
                     index=['Model', 'Last modified', 'Size in KB']).T
                 st.dataframe(files_with_time.set_index("Model"))
                 
-                file = st.selectbox("Select a memory file to load", files)
-                if st.button("Load conversations",type="primary"):
-                    messages = load_message(file)
-                    st.session_state.messages = messages
-                    st.success("Loaded!")
+                file = st.selectbox("Select a memory file", files)
+                
+                load_col, delete_col = st.columns(2)
+                with load_col:
+                    if st.button("Load",type="primary"):
+                        messages = load_message(file)
+                        st.session_state.messages = messages
+                        st.success("Loaded!")
+                with delete_col:
+                    if st.button("Delete"):
+                        messages = delete_message(file)
+                        st.success("Deleted!")
                     
     if "messages" not in st.session_state:
         st.session_state.messages = []
