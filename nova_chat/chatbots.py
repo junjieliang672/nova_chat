@@ -66,7 +66,7 @@ def select_model():
         (x.value.label for x in RemoteLLM),
     )
     
-def build_sidebar():
+def build_model_loader_sidebar():
     with st.sidebar:
         with st.container():
             v = select_model()
@@ -74,12 +74,7 @@ def build_sidebar():
             st.markdown("#")
     return model
 
-
-def build_streamlit_demo():
-    
-    model = build_sidebar()
-    memory = ConversationBufferWindowMemory(k=30, memory_key="chat_history", return_messages=True)
-    
+def build_chat_io_sidebar():
     with st.sidebar:
         with st.container():
             filename = st.text_input("Save conversation history to file","test")
@@ -87,8 +82,8 @@ def build_streamlit_demo():
             with save_col:
                 if st.button("Save chat",type="primary"):
                     if st.session_state.messages:
-                        save_message(filename, st.session_state.messages)
-                        st.success("Done!")
+                        p = save_message(filename, st.session_state.messages)
+                        st.success(f"Saved to {p}")
                     else:
                         st.error("Empty session state!")
             with clear_col:
@@ -123,6 +118,15 @@ def build_streamlit_demo():
                     if st.button("Delete"):
                         messages = delete_message(file)
                         st.success("Deleted!")
+        st.markdown("#")
+
+
+def build_streamlit_demo():
+    
+    model = build_model_loader_sidebar()
+    memory = ConversationBufferWindowMemory(k=30, memory_key="chat_history", return_messages=True)
+    
+    build_chat_io_sidebar()
                     
     if "messages" not in st.session_state:
         st.session_state.messages = []

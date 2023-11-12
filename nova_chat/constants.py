@@ -1,7 +1,9 @@
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
-from os import environ
+import os
+from os import environ, path
+
 
 AIIP = "localhost"
 PORT = "11434"
@@ -56,4 +58,4 @@ class RemoteLLM(Enum):
             if item.value.label == label_to_match:
                 return item
             
-IO_DIR = "~/streamlit_conversations"
+IO_DIR = path.join(os.getenv("HOME"), "streamlit_conversations")

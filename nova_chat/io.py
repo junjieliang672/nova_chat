@@ -6,6 +6,7 @@ def save_message(filename, mes):
     p = os.path.join(IO_DIR, filename)
     with open(p, 'wb') as file:
         pickle.dump(mes, file)
+    return p
 
 def load_message(filename):
     p = os.path.join(IO_DIR, filename)
@@ -14,4 +15,5 @@ def load_message(filename):
     
 def delete_message(filename):
     p = os.path.join(IO_DIR, filename)
-    os.remove(p)
+    if os.path.exists(p):
+        os.remove(p)
