@@ -104,10 +104,10 @@ def build_streamlit_demo():
                     in files
                 ]
                 file_sizes = [
-                    format(os.path.getsize(os.path.join(IO_DIR, file)) / (1024 * 1024), f".2f") for
+                    format(os.path.getsize(os.path.join(IO_DIR, file)) / 1024, f".2f KB") for
                     file in files]
                 files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
-                    index=['Model', 'Last modified', 'Size in MB']).T
+                    index=['Model', 'Last modified', 'Size']).T
                 st.dataframe(files_with_time.set_index("Model"))
                 
                 file = st.selectbox("Select a memory file to load", files)
