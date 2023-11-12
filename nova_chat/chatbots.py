@@ -78,7 +78,6 @@ def build_streamlit_demo():
     
     model = build_sidebar()
     memory = ConversationBufferWindowMemory(k=30, memory_key="chat_history", return_messages=True)
-    chat = getConversation(memory,model, st)
     
     with st.sidebar:
         filename = st.text_input("Save conversation history to file","test.json")
@@ -111,7 +110,6 @@ def build_streamlit_demo():
                 messages = load_message(file)
                 st.session_state.messages = messages
                 st.success("Loaded!")
-                st.write(st.session_state.messages)
                     
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -129,5 +127,6 @@ def build_streamlit_demo():
             st.markdown(prompt)
             
         form_prompt_history(st.session_state.messages, memory)
+        chat = getConversation(memory,model, st)
         res = chat({"question":prompt})
         st.session_state.messages.append({"role": "assistant", "content": res["text"]})
