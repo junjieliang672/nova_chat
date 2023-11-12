@@ -89,7 +89,11 @@ def build_streamlit_demo():
             st.success("Done!")
             
         with st.expander("List saved conversations:"):
+            if not os.path.exists(IO_DIR):
+                os.makedirs(IO_DIR)
+                
             files = os.listdir(IO_DIR)
+                
             file_modified_time = [
                 datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).isoformat() for file
                 in files
