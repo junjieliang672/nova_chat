@@ -112,6 +112,8 @@ def build_streamlit_demo():
                 for message in messages:
                     st.session_state.messages.append({"role": "user", "content": message["input"]})
                     st.session_state.messages.append({"role": "assistant", "content": message["output"]})
+                st.success("Loaded!")
+                st.write(st.session_state.messages)
                     
     if "messages" not in st.session_state:
         st.session_state.messages = []
