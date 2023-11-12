@@ -81,7 +81,7 @@ def build_streamlit_demo():
     memory = ConversationBufferWindowMemory(k=30, memory_key="chat_historychat_history", return_messages=True)
     chat = getConversation(memory,model, st)
     
-    with st.sidebar():
+    with st.sidebar:
         filename = st.text(help="save conversation to the file...")
         if st.button("Save conversation history"):
             msg_dict = memory_to_dict(memory)
