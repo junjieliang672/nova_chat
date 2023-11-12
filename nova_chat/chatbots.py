@@ -84,14 +84,14 @@ def build_streamlit_demo():
             filename = st.text_input("Save conversation history to file","test.json")
             save_col, clear_col = st.columns(2)
             with save_col:
-                if st.button("Save conversation history",type="primary"):
+                if st.button("Save chat",type="primary"):
                     if st.session_state.messages:
                         save_message(filename, st.session_state.messages)
                         st.success("Done!")
                     else:
                         st.error("Empty session state!")
             with clear_col:
-                st.button('Clear chat history', on_click=clear_chat_history)
+                st.button('Clear chat', on_click=clear_chat_history)
                 
             with st.expander("List saved conversations:"):
                 if not os.path.exists(IO_DIR):
@@ -108,6 +108,7 @@ def build_streamlit_demo():
                     file in files]
                 files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
                     index=['Model', 'Last modified', 'Size in MB']).T
+                files_with_time.set_index("Model")
                 st.dataframe(files_with_time)
                 
                 file = st.selectbox("Select a memory file to load", files)
