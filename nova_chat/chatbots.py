@@ -78,7 +78,7 @@ def build_sidebar():
 def build_streamlit_demo():
     
     model = build_sidebar()
-    memory = ConversationBufferWindowMemory(k=30, memory_key="chat_historychat_history", return_messages=True)
+    memory = ConversationBufferWindowMemory(k=30, memory_key="chat_history", return_messages=True)
     chat = getConversation(memory,model, st)
     
     with st.sidebar:
