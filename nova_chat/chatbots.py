@@ -107,8 +107,7 @@ def build_streamlit_demo():
             
             file = st.selectbox("Select a memory file to load", files)
             if st.button("Load conversations",type="primary"):
-                st.write(file)
-                messages = load_message(os.path.join(IO_DIR, file))
+                messages = load_message(file)
                 st.session_state.messages = []
                 for message in messages:
                     st.session_state.messages.append({"role": "user", "content": message["input"]})
