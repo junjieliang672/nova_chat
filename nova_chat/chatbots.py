@@ -70,7 +70,11 @@ def build_chat_io_sidebar():
     """Build the chat io sidebar."""
     with st.sidebar:
         with st.container():
+            user = st.radio("Select user", APP_USERS)
+            project_dir = os.path.join(IO_DIR, user)
             filename = st.text_input("Save conversation history to file","test")
+            filename = os.path.join(project_dir, filename)
+            
             save_col, clear_col = st.columns(2)
             with save_col:
                 if st.button("Save chat",type="primary"):
@@ -84,9 +88,6 @@ def build_chat_io_sidebar():
                     st.session_state.messages = []
             
             with st.expander("List saved conversations:"):
-                user = st.radio("Select user", APP_USERS)
-                project_dir = os.path.join(IO_DIR, user)
-                
                 if not os.path.exists(project_dir):
                     os.makedirs(project_dir)
                     
@@ -104,6 +105,7 @@ def build_chat_io_sidebar():
                 st.dataframe(files_with_time.set_index("Model"))
                 
                 file = st.selectbox("Select a memory file", files)
+                file = os.path.join(project_dir, file)
                 
                 load_col, delete_col = st.columns(2)
                 with load_col:

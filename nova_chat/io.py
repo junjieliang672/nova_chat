@@ -1,19 +1,15 @@
 import os
 import pickle
-from nova_chat.constants import IO_DIR
 
-def save_message(filename, mes):
-    p = os.path.join(IO_DIR, filename)
+def save_message(p, mes):
     with open(p, 'wb') as file:
         pickle.dump(mes, file)
     return p
 
-def load_message(filename):
-    p = os.path.join(IO_DIR, filename)
+def load_message(p):
     with open(p, "rb") as file:
         return pickle.load(file)
     
-def delete_message(filename):
-    p = os.path.join(IO_DIR, filename)
+def delete_message(p):
     if os.path.exists(p):
         os.remove(p)
