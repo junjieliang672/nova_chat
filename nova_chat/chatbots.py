@@ -94,11 +94,11 @@ def build_chat_io_sidebar():
                 files = os.listdir(project_dir)
                     
                 file_modified_time = [
-                    datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).date() for file
+                    datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(project_dir, file))).date() for file
                     in files
                 ]
                 file_sizes = [
-                    format(os.path.getsize(os.path.join(IO_DIR, file)) / 1024, f".2f") for
+                    format(os.path.getsize(os.path.join(project_dir, file)) / 1024, f".2f") for
                     file in files]
                 files_with_time = pd.DataFrame(data=[files, file_modified_time, file_sizes],
                     index=['Model', 'Last modified', 'Size in KB']).T
