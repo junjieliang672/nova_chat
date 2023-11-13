@@ -36,12 +36,6 @@ class RemoteLLM(Enum):
     CHATGPT_16K = LLMConfig(
         model="gpt-3.5-turbo-16k",
         base_url=None,
-        label="chatgpt-16k",
-        open_api_key=environ.get("OPENAI_API_KEY"),
-    )
-    CHATGPT = LLMConfig(
-        model="gpt-3.5-turbo",
-        base_url=None,
         label="chatgpt",
         open_api_key=environ.get("OPENAI_API_KEY"),
     )
