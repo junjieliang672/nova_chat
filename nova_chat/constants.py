@@ -28,11 +28,6 @@ class RemoteLLM(Enum):
         base_url=get_url(AIIP, PORT),
         label="ollama-llama2-13b",
     )
-    LLAMA2_70B = LLMConfig(
-        model="llama2:70b",
-        base_url=get_url(AIIP, PORT),
-        label="ollama-llama2-70b",
-    )
     CODELLAMA = LLMConfig(
         model="codellama",
         base_url=get_url(AIIP, PORT),
