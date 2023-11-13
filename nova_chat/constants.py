@@ -64,3 +64,4 @@ class RemoteLLM(Enum):
                 return item
             
 IO_DIR = path.join(os.getenv("HOME"), "streamlit_conversations")
+APP_USERS = ["Jetfeet", "Junhead"]

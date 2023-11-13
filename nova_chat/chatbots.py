@@ -1,6 +1,6 @@
 import datetime
 import os
-from nova_chat.constants import IO_DIR, RemoteLLM
+from nova_chat.constants import IO_DIR, RemoteLLM, APP_USERS
 from nova_chat.llm_client import LLMFactory
 
 from langchain.prompts import (
@@ -41,9 +41,8 @@ def getConversation(memory, model, st=None):
             verbose=False,
             memory=memory
         )
-    
 
-def form_prompt_history(messages, memory):
+def populate_messages_to_memory(messages, memory):
     """Build up the prompt memory from the session state messages."""
     input, output = None, None
     for message in messages:
@@ -56,25 +55,19 @@ def form_prompt_history(messages, memory):
             memory.save_context({"input": input}, {"output": output})
             input, output = None, None
             
-
-def clear_chat_history():
-    st.session_state.messages = []
-
-def select_model():
-    return st.selectbox(
-        "What model do you want to use?",
-        (x.value.label for x in RemoteLLM),
-    )
-    
 def build_model_loader_sidebar():
     with st.sidebar:
         with st.container():
-            v = select_model()
+            v = st.selectbox(
+                "What model do you want to use?",
+                (x.value.label for x in RemoteLLM),
+            )
             model = RemoteLLM.get_enum_by_model(v)
             st.markdown("#")
     return model
 
 def build_chat_io_sidebar():
+    """Build the chat io sidebar."""
     with st.sidebar:
         with st.container():
             filename = st.text_input("Save conversation history to file","test")
@@ -87,13 +80,17 @@ def build_chat_io_sidebar():
                     else:
                         st.error("Empty session state!")
             with clear_col:
-                st.button('Clear chat', on_click=clear_chat_history)
-                
+                if st.button('Clear chat'):
+                    st.session_state.messages = []
+            
             with st.expander("List saved conversations:"):
-                if not os.path.exists(IO_DIR):
-                    os.makedirs(IO_DIR)
+                user = st.radio("Select user", APP_USERS)
+                project_dir = os.path.join(IO_DIR, user)
+                
+                if not os.path.exists(project_dir):
+                    os.makedirs(project_dir)
                     
-                files = os.listdir(IO_DIR)
+                files = os.listdir(project_dir)
                     
                 file_modified_time = [
                     datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(str(IO_DIR), str(file)))).date() for file
@@ -142,7 +139,7 @@ def build_streamlit_demo():
         with st.chat_message("user"):
             st.markdown(prompt)
             
-        form_prompt_history(st.session_state.messages, memory)
+        populate_messages_to_memory(st.session_state.messages, memory)
         chat = getConversation(memory,model, st)
         res = chat({"question":prompt})
         st.session_state.messages.append({"role": "assistant", "content": res["text"]})
