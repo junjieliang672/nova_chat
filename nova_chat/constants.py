@@ -26,7 +26,7 @@ class RemoteLLM(Enum):
     LLAMA2_13B = LLMConfig(
         model="llama2:13b",
         base_url=get_url(AIIP, PORT),
-        label="ollama-llama2-13b :muscle:",
+        label="ollama-llama2-13b",
     )
     CODELLAMA = LLMConfig(
         model="codellama",
@@ -36,19 +36,19 @@ class RemoteLLM(Enum):
     CHATGPT_16K = LLMConfig(
         model="gpt-3.5-turbo-16k",
         base_url=None,
-        label="chatgpt-16k :money_with_wings:",
+        label="chatgpt-16k",
         open_api_key=environ.get("OPENAI_API_KEY"),
     )
     CHATGPT = LLMConfig(
         model="gpt-3.5-turbo",
         base_url=None,
-        label="chatgpt :money_with_wings:",
+        label="chatgpt",
         open_api_key=environ.get("OPENAI_API_KEY"),
     )
     GPT4 = LLMConfig(
         model="gpt-4",
         base_url=None,
-        label="gpt4 :money_with_wings::money_with_wings:",
+        label="gpt4",
         open_api_key=environ.get("OPENAI_API_KEY"),
     )
     
