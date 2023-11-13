@@ -105,16 +105,17 @@ def build_chat_io_sidebar():
                 st.dataframe(files_with_time.set_index("Model"))
                 
                 file = st.selectbox("Select a memory file", files)
-                file = os.path.join(project_dir, file)
+                if file:
+                    file = os.path.join(project_dir, file)
                 
                 load_col, delete_col = st.columns(2)
                 with load_col:
-                    if st.button("Load",type="primary"):
+                    if st.button("Load",type="primary") and file:
                         messages = load_message(file)
                         st.session_state.messages = messages
                         st.success("Loaded!")
                 with delete_col:
-                    if st.button("Delete"):
+                    if st.button("Delete") and file:
                         messages = delete_message(file)
                         st.success("Deleted!")
         st.markdown("#")
