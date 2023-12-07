@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 import os
 from os import environ, path
+from functools import partial
 
 
 AIIP = "localhost"
@@ -20,19 +21,30 @@ class LLMConfig(BaseModel):
 class RemoteLLM(Enum):
     MISTRAL = LLMConfig(
         model="mistral:7b-instruct",
-        base_url=get_url(AIIP, PORT),
+        base_url=get_url(),
         label="mistral"
     )
     LLAMA2_13B = LLMConfig(
         model="llama2:13b",
-        base_url=get_url(AIIP, PORT),
+        base_url=get_url(),
         label="ollama-llama2-13b",
     )
     CODELLAMA = LLMConfig(
         model="codellama",
-        base_url=get_url(AIIP, PORT),
+        base_url=get_url(),
         label="ollama-codellama-7b",
     )
+    STARCODER = LLMConfig(
+        model="starcoder",
+        base_url=get_url(),
+        label="starcoder",
+    )
+    ORCA2 = LLMConfig(
+        model="orca2",
+        base_url=get_url(),
+        label="orca2",
+    )
+    
     CHATGPT_16K = LLMConfig(
         model="gpt-3.5-turbo-16k",
         base_url=None,
